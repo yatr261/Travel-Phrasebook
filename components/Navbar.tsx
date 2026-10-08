@@ -1,139 +1,243 @@
-'use me';
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Compass, Menu, X, Sparkles, Settings } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Compass, Menu, X, Settings, User, LogOut, LogIn, UserPlus } from 'lucide-react';
+
+interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const pathname = usePathname();
+  const router = useRouter();
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) checkAuth();
+    });
+
+    const handleAuthChange = () => checkAuth();
+    window.addEventListener('auth-state-changed', handleAuthChange);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('auth-state-changed', handleAuthChange);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
+      window.dispatchEvent(new Event('auth-state-changed'));
+      router.push('/login');
+      router.refresh();
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
 
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/explore', label: 'Explore' },
     { href: '/phrasebook', label: 'Phrasebook' },
     { href: '/quiz', label: 'Quiz' },
-    { href: '/emergency', label: '🚨 SOS' },
-    { href: '/business', label: '💼 Business' },
+    { href: '/emergency', label: 'SOS' },
+    { href: '/business', label: 'Business' },
     { href: '/favorites', label: 'Favorites' },
     { href: '/dashboard', label: 'Dashboard' },
   ];
 
   const isActive = (path: string) => {
     if (path === '/' && pathname === '/') return true;
-    if (path !== '/' && pathname.startsWith(path)) return true;
+    if (path !== '/' && !path.includes('#') && pathname.startsWith(path)) return true;
     return false;
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[#07111F]/85 border-b border-slate-800/80 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
-              <Compass className="w-6 h-6 animate-pulse" />
+          {/* Left: Brand Logo */}
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00C9A7] via-[#38BDF8] to-indigo-600 flex items-center justify-center text-slate-950 shadow-lg shadow-[#00C9A7]/25 group-hover:scale-105 transition-transform duration-200">
+              <Compass className="w-5 h-5 text-slate-950 stroke-[2.5]" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-                🌍 Travel Phrasebook
+              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-[#00C9A7] transition-colors flex items-center gap-1.5">
+                Travel Phrasebook
               </span>
-              <span className="text-[10px] font-medium tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
-                AI Language Assistant
+              <span className="text-[10px] font-mono tracking-widest text-[#00C9A7] uppercase font-bold flex items-center gap-1">
+                AI TRAVEL TECH
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(link.href)
-                    ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          {/* Center: Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5 bg-[#0B1630]/80 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 ${
+                    active
+                      ? 'text-[#00C9A7] bg-[#00C9A7]/15 border border-[#00C9A7]/30 font-bold shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  }`}
+                >
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Desktop Action Buttons */}
+          {/* Right: Actions */}
           <div className="hidden md:flex items-center space-x-3">
             <Link
               href="/settings"
-              className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-              title="Settings"
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-xl transition-colors border border-transparent hover:border-slate-700"
+              title="Settings & Theme"
+              aria-label="Settings"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4" />
             </Link>
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              href="/phrasebook"
-              className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/35 transition-all duration-200 flex items-center gap-1.5"
-            >
-              <Sparkles className="w-4 h-4" />
-              Get Started
-            </Link>
+
+            {!loading && user ? (
+              <div className="flex items-center space-x-2">
+                <Link
+                  href="/dashboard"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#00C9A7] bg-[#00C9A7]/10 border border-[#00C9A7]/30 flex items-center gap-1.5 hover:bg-[#00C9A7]/20 transition-all"
+                >
+                  <User className="w-3.5 h-3.5 text-[#00C9A7]" />
+                  <span>{user.name}</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors font-medium text-xs flex items-center gap-1 border border-rose-500/20"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="sr-only sm:not-sr-only">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  href="/login"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition-colors flex items-center gap-1.5"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Sign In</span>
+                </Link>
+                <Link
+                  href="/signup"
+                  className="px-4 py-1.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-[#00C9A7] to-[#38BDF8] hover:opacity-90 shadow-md shadow-[#00C9A7]/20 transition-all flex items-center gap-1.5"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Sign Up</span>
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center space-x-2">
+          {/* Mobile Menu Toggle Button */}
+          <div className="flex lg:hidden items-center space-x-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none transition-colors"
+              className="p-2.5 rounded-xl text-slate-300 hover:text-white bg-slate-800/80 border border-slate-700 focus:outline-none transition-colors"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[#00C9A7]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 pt-2 pb-6 space-y-2 animate-in slide-in-from-top-4 duration-200">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                isActive(link.href)
-                  ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 font-semibold'
-                  : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
-            <Link
-              href="/settings"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800"
-            >
-              Settings
-            </Link>
-            <Link
-              href="/phrasebook"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 shadow-md shadow-emerald-500/20"
-            >
-              Get Started Free
-            </Link>
+        <div className="lg:hidden border-b border-slate-800 bg-[#07111F]/95 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-4 duration-200">
+          <div className="grid grid-cols-2 gap-2 pb-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-3 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+                  isActive(link.href)
+                    ? 'text-[#00C9A7] bg-[#00C9A7]/15 border border-[#00C9A7]/30 font-bold'
+                    : 'text-slate-300 bg-slate-900/60 border border-slate-800 hover:bg-slate-800'
+                }`}
+              >
+                <span>{link.label}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="pt-3 border-t border-slate-800/80 flex flex-col gap-2">
+            {user ? (
+              <>
+                <div className="px-4 py-2 text-xs font-bold text-[#00C9A7] flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  <span>Signed in as {user.name}</span>
+                </div>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-center py-2.5 rounded-xl text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800 border border-slate-700"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-[#00C9A7] to-[#38BDF8]"
+                >
+                  Create Account
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

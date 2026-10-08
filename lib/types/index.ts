@@ -27,6 +27,7 @@ export interface Language {
   regionName?: string;
   scriptName?: string;
   ttsLangCode: string; // alias for speechLocale e.g. 'pa-IN'
+  isRTL?: boolean;
 }
 
 export interface EmergencyPhrase {
@@ -64,11 +65,14 @@ export interface Phrase {
 
 export interface GeminiPhrase {
   id: string;
+  category?: string;
   originalPhrase: string;
   englishMeaning: string;
   pronunciation: string;
   formality: 'polite' | 'casual' | 'formal';
   usageContext: string;
+  culturalTip?: string;
+  priority?: string;
   languageName?: string;
   situationName?: string;
   ttsLangCode?: string;
@@ -81,6 +85,47 @@ export interface CustomAIPhraseResult {
   formalVersion: string;
   casualVersion: string;
   usageTip: string;
+}
+
+export interface AskAIAlternative {
+  label: string;
+  translation: string;
+  pronunciation?: string;
+  style?: string;
+}
+
+export interface AskAISubItem {
+  language: string;
+  languageCode?: string;
+  translation?: string;
+  pronunciation?: string;
+  meaning?: string;
+  usageContext?: string;
+  formality?: 'polite' | 'casual' | 'formal';
+  isRTL?: boolean;
+}
+
+export interface AskAIResult {
+  answerType?: 'translation' | 'meaning' | 'pronunciation' | 'multi_language' | 'explanation' | 'general';
+  detectedLanguage?: string;
+  detectedLanguageCode?: string;
+  originalText?: string;
+  translation?: string;
+  pronunciation?: string;
+  meaning?: string;
+  explanation?: string;
+  usageContext?: string;
+  formality?: 'polite' | 'casual' | 'formal';
+  alternatives?: AskAIAlternative[];
+  multiLanguageResults?: AskAISubItem[];
+  ttsText?: string;
+  isRTL?: boolean;
+}
+
+export interface AskAIHistoryItem {
+  question: string;
+  result: AskAIResult;
+  detectedLanguage?: string;
 }
 
 export interface QuizQuestion {

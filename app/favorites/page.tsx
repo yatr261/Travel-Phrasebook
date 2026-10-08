@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import PhraseCard from '../../components/PhraseCard';
 import { GeminiPhrase } from '../../lib/types';
 import { getFavorites, removeFavorite } from '../../lib/utils/favorites';
-import { Heart, Search, Sparkles } from 'lucide-react';
+import { Heart, Search, Sparkles, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
 const defaultInitialFavorites: GeminiPhrase[] = [
@@ -27,7 +27,7 @@ const defaultInitialFavorites: GeminiPhrase[] = [
     englishMeaning: 'Greetings & Respectful Welcome',
     pronunciation: 'Namaste!',
     formality: 'polite',
-    usageContext: 'Traditional respectful greeting with palms joined near the chest.',
+    usageContext: 'Traditional respectful greeting with palms joined near the chest in India.',
     languageName: 'Hindi',
     situationName: 'Greetings',
     ttsLangCode: 'hi-IN'
@@ -79,48 +79,47 @@ export default function FavoritesPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex flex-col bg-[#07111F] text-slate-100">
       <Navbar />
 
       <main className="flex-grow py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                <Heart className="w-8 h-8 text-rose-500 fill-rose-500" />
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white flex items-center gap-2">
                 <span>My Saved Favorites</span>
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Access your bookmarked phrases with offline audio pronunciation and phonetics.
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                Access your saved phrase cards with native audio, phonetics, and usage tips.
               </p>
             </div>
 
             <Link
               href="/phrasebook"
-              className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#00C9A7] via-[#38BDF8] to-[#00C9A7] text-slate-950 font-extrabold text-xs shadow-lg shadow-[#00C9A7]/20 hover:opacity-95 transition-all flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Explore Phrasebook Builder</span>
+              <Sparkles className="w-4 h-4 stroke-[2.5]" />
+              <span>Explore Phrasebook</span>
             </Link>
           </div>
 
-          {/* Search Filter for Favorites */}
+          {/* Search Filter */}
           <div className="relative max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search saved phrases (e.g. hotel, taxi, help, thank you, Japanese...)"
+              placeholder="Search saved phrases (e.g. hotel, taxi, help, Japanese...)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 text-slate-900 dark:text-white"
+              className="w-full pl-11 pr-4 py-3 bg-[#0D1B3A] border border-slate-800 rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 text-white placeholder:text-slate-500 font-medium"
             />
           </div>
 
-          {/* Cards Grid */}
+          {/* Cards Grid or Empty State */}
           {filteredFavorites.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
               {filteredFavorites.map((phrase) => (
                 <PhraseCard
                   key={phrase.id}
@@ -131,12 +130,21 @@ export default function FavoritesPage() {
               ))}
             </div>
           ) : (
-            <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 space-y-4">
-              <Heart className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto" />
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No Saved Favorites Found</h3>
-              <p className="text-sm text-slate-500 max-w-md mx-auto">
-                Click the heart ❤️ icon on any phrase card in the phrasebook to bookmark phrases here for quick reference.
+            <div className="py-20 text-center bg-[#0D1B3A] rounded-3xl border border-slate-800 p-8 space-y-4 shadow-xl">
+              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
+                <Heart className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-extrabold text-white">Save phrases you want to remember</h3>
+              <p className="text-xs text-slate-400 max-w-md mx-auto">
+                Click the heart ❤️ icon on any phrase card in the Phrasebook to bookmark phrases here for quick offline access during your trips.
               </p>
+              <Link
+                href="/phrasebook"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#00C9A7] text-slate-950 font-bold text-xs shadow-md mt-2"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Go to Phrasebook</span>
+              </Link>
             </div>
           )}
 

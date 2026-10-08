@@ -18,18 +18,15 @@ export default function IndianLanguagesSection() {
   };
 
   return (
-    <section className="py-16 sm:py-24 bg-gradient-to-b from-amber-500/5 via-slate-50 to-white dark:from-amber-950/10 dark:via-slate-900 dark:to-slate-950 border-y border-amber-500/10">
+    <section className="py-16 sm:py-24 bg-[#07111F] text-white border-y border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs font-semibold tracking-wide border border-amber-500/20">
-            <span>🇮🇳 Deep Support for Travelers to India</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
             Explore 9 Major Indian Regional Languages
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+          <p className="text-base sm:text-lg text-slate-300 font-medium">
             India is home to vibrant linguistic diversity. Travel Phrasebook equips you with native scripts, phonetics, and pronunciation across key tourist regions.
           </p>
         </div>
@@ -42,10 +39,10 @@ export default function IndianLanguagesSection() {
               <button
                 key={lang.id}
                 onClick={() => setActiveLangId(lang.id)}
-                className={`px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                   isActive
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md scale-105'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#00C9A7] text-slate-950 shadow-md scale-105'
+                    : 'bg-[#0D1B3A] text-slate-300 hover:bg-slate-800 border border-slate-800'
                 }`}
               >
                 <span>{lang.name}</span>
@@ -56,7 +53,7 @@ export default function IndianLanguagesSection() {
         </div>
 
         {/* Showcase Card for Active Language */}
-        <div className="max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden transition-all duration-300">
+        <div className="max-w-4xl mx-auto bg-[#0D1B3A] rounded-3xl p-6 sm:p-10 border border-slate-800 shadow-2xl relative overflow-hidden transition-all duration-300">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
@@ -65,29 +62,29 @@ export default function IndianLanguagesSection() {
               <div className="flex items-center space-x-3">
                 <span className="text-4xl">🇮🇳</span>
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
                     {activeLang.name} ({activeLang.nativeName})
                   </h3>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
-                    Native TTS Voice Audio Supported
+                  <p className="text-xs text-[#00C9A7] font-bold">
+                    Native Speech TTS Audio Supported
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300 pt-2">
+              <div className="space-y-2 text-xs sm:text-sm text-slate-300 pt-2 font-medium">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <MapPin className="w-4 h-4 text-[#00C9A7] shrink-0" />
                   <span><strong>Spoken in:</strong> {activeLang.statesSpoken.join(', ')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <Users className="w-4 h-4 text-[#38BDF8] shrink-0" />
                   <span><strong>Speakers:</strong> {activeLang.speakers}</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                <span>
+              <div className="p-4 rounded-2xl bg-[#07111F] border border-slate-800 text-xs text-slate-300 flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-[#F5B942] shrink-0 mt-0.5" />
+                <span className="leading-relaxed">
                   Visiting landmarks in this region? Select <strong>{activeLang.name}</strong> in the Phrasebook builder to get tailored local transit, food, and cultural etiquette phrases.
                 </span>
               </div>
@@ -95,28 +92,30 @@ export default function IndianLanguagesSection() {
 
             {/* Right Interactive Sample Card */}
             <div className="lg:col-span-6">
-              <div className={`p-6 sm:p-8 rounded-2xl bg-gradient-to-br ${activeLang.gradient} text-white shadow-lg space-y-4`}>
-                <span className="text-[11px] uppercase tracking-wider font-bold bg-white/20 px-2.5 py-1 rounded-md">
-                  Sample Traveler Phrase
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#07111F] border border-[#00C9A7]/40 text-white shadow-xl space-y-4">
+                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-[#00C9A7]/20 text-[#00C9A7] px-3 py-1 rounded-lg border border-[#00C9A7]/30">
+                  Sample Phrase
                 </span>
 
                 <div>
-                  <h4 className="text-2xl sm:text-3xl font-extrabold tracking-wide">
+                  <h4 className="text-2xl sm:text-3xl font-black tracking-wide text-white">
                     {activeLang.samplePhrase.native}
                   </h4>
-                  <p className="text-xs font-mono font-medium opacity-90 mt-1">
+                  <p className="text-xs font-mono font-bold text-[#F5B942] mt-1">
                     🗣 {activeLang.samplePhrase.phonetic}
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-white/20 flex items-center justify-between">
-                  <span className="text-sm font-medium">
+                <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-200">
                     &ldquo;{activeLang.samplePhrase.english}&rdquo;
                   </span>
                   <button
                     onClick={() => handlePlay(activeLang.samplePhrase.native, activeLang.ttsLangCode, activeLang.id)}
-                    className={`p-3 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md transition-all ${
-                      playingId === activeLang.id ? 'scale-110 bg-white text-slate-900' : ''
+                    className={`p-3 rounded-xl transition-all cursor-pointer ${
+                      playingId === activeLang.id
+                        ? 'bg-[#00C9A7] text-slate-950 animate-pulse'
+                        : 'bg-slate-800 text-[#00C9A7] hover:bg-slate-700'
                     }`}
                     title="Play Audio Pronunciation"
                   >

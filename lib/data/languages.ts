@@ -60,7 +60,8 @@ export const LANGUAGES: Language[] = [
     locale: 'ar-SA',
     speechLocale: 'ar-SA',
     ttsLangCode: 'ar-SA',
-    flag: '🇦🇪'
+    flag: '🇦🇪',
+    isRTL: true
   },
   {
     id: 'english',

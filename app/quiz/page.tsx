@@ -11,7 +11,6 @@ import { playTextToSpeech } from '../../lib/utils/speech';
 import { LANGUAGES } from '../../lib/data/languages';
 import { SITUATIONS } from '../../lib/data/situations';
 import {
-  Brain,
   Volume2,
   CheckCircle2,
   XCircle,
@@ -66,7 +65,7 @@ function QuizContent() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate quiz');
+        throw new Error(data.error || 'Failed to generate quiz questions');
       }
 
       setQuestions(data.questions || []);
@@ -104,7 +103,6 @@ function QuizContent() {
       setScore((prev) => prev + 1);
     }
 
-    // Play TTS for the correct answer if available
     playTextToSpeech(currentQuestion.correctAnswer, 'en-US', 0.9);
   };
 
@@ -136,12 +134,11 @@ function QuizContent() {
     fetchQuizQuestions();
   };
 
-  // Performance Rating Badge Helper
   const getRatingBadge = (acc: number) => {
-    if (acc === 100) return { title: '🏆 Excellent!', desc: 'Flawless native score! You are ready for your trip.', color: 'text-amber-500 bg-amber-500/10 border-amber-500/30' };
-    if (acc >= 80) return { title: '🔥 Great Job!', desc: 'High proficiency! You mastered most of these travel phrases.', color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30' };
-    if (acc >= 60) return { title: '👍 Good!', desc: 'Solid foundation. A little more review and you will be fluent.', color: 'text-blue-500 bg-blue-500/10 border-blue-500/30' };
-    return { title: '📚 Keep Practicing', desc: 'Review the phrasebook once more to sharpen your memory.', color: 'text-rose-500 bg-rose-500/10 border-rose-500/30' };
+    if (acc === 100) return { title: '🏆 Excellent!', desc: 'Flawless native score! You are fully prepared for your trip.', color: 'text-[#F5B942] bg-[#F5B942]/10 border-[#F5B942]/30' };
+    if (acc >= 80) return { title: '🔥 Great Job!', desc: 'High proficiency! You mastered most travel phrases.', color: 'text-[#00C9A7] bg-[#00C9A7]/10 border-[#00C9A7]/30' };
+    if (acc >= 60) return { title: '👍 Good Effort!', desc: 'Solid foundation. A little more practice and you will be fluent.', color: 'text-[#38BDF8] bg-[#38BDF8]/10 border-[#38BDF8]/30' };
+    return { title: '📚 Keep Practicing', desc: 'Review the phrasebook cards once more to sharpen your memory.', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' };
   };
 
   const progressPercent = questions.length > 0 ? Math.round(((currentIndex + 1) / questions.length) * 100) : 0;
@@ -151,42 +148,38 @@ function QuizContent() {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20">
-          <Brain className="w-4 h-4 text-emerald-500 animate-pulse" />
-          <span>AI-Generated Spaced-Repetition Quiz</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
           Travel Language Quiz
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">
-          Practice travel phrases for <strong>{selectedLanguage}</strong> ({selectedSituation})
+        <p className="text-sm sm:text-base text-slate-300">
+          Practice travel vocabulary for <strong className="text-[#00C9A7]">{selectedLanguage}</strong> ({selectedSituation})
         </p>
       </div>
 
       {/* Language & Situation Quick Select Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-[#0D1B3A] p-4 rounded-3xl border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <label className="text-xs font-semibold text-slate-500">Language:</label>
+          <label className="text-xs font-bold text-slate-400">Language:</label>
           <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none"
+            className="px-3.5 py-2 rounded-xl bg-[#07111F] border border-slate-700 text-xs font-bold text-white focus:outline-none focus:border-[#00C9A7] cursor-pointer"
           >
             {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.name}>
+              <option key={l.code} value={l.name} className="bg-[#07111F] text-white">
                 {l.flag} {l.name}
               </option>
             ))}
           </select>
 
-          <label className="text-xs font-semibold text-slate-500 ml-2">Situation:</label>
+          <label className="text-xs font-bold text-slate-400 sm:ml-2">Situation:</label>
           <select
             value={selectedSituation}
             onChange={(e) => setSelectedSituation(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none"
+            className="px-3.5 py-2 rounded-xl bg-[#07111F] border border-slate-700 text-xs font-bold text-white focus:outline-none focus:border-[#00C9A7] cursor-pointer"
           >
             {SITUATIONS.map((s) => (
-              <option key={s.id} value={s.name}>
+              <option key={s.id} value={s.name} className="bg-[#07111F] text-white">
                 {s.name}
               </option>
             ))}
@@ -196,47 +189,45 @@ function QuizContent() {
         <button
           onClick={fetchQuizQuestions}
           disabled={loading}
-          className="px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-semibold hover:bg-emerald-100 transition-colors flex items-center gap-1.5 border border-emerald-500/20 shrink-0"
+          className="px-4 py-2 rounded-xl bg-[#00C9A7]/15 hover:bg-[#00C9A7]/25 text-[#00C9A7] text-xs font-bold transition-all flex items-center gap-1.5 border border-[#00C9A7]/30 shrink-0 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>New Quiz</span>
         </button>
       </div>
 
-      {/* Notice if Fallback */}
+      {/* Fallback Notice */}
       {isFallback && (
-        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
-          <span>
-            ℹ️ Demo Mode Active: Add <code>GEMINI_API_KEY</code> to <code>.env.local</code> to generate real-time live AI quizzes with Gemini.
-          </span>
+        <div className="p-4 rounded-2xl bg-[#F5B942]/10 border border-[#F5B942]/30 text-[#F5B942] text-xs flex items-center gap-2">
+          <Sparkles className="w-4 h-4 shrink-0" />
+          <span>Demo Mode Active: Offline quiz questions loaded. Add <code>GEMINI_API_KEY</code> in <code>.env.local</code> for live AI quizzes.</span>
         </div>
       )}
 
       {/* Loading State */}
       {loading && (
-        <div className="py-20 text-center space-y-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
-          <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto" />
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-            Gemini is creating your quiz...
+        <div className="py-20 text-center space-y-4 bg-[#0D1B3A] rounded-3xl border border-slate-800 p-8 shadow-xl">
+          <div className="w-12 h-12 border-4 border-[#00C9A7]/30 border-t-[#00C9A7] rounded-full animate-spin mx-auto" />
+          <h3 className="text-xl font-bold text-white">
+            Creating quiz for {selectedLanguage}...
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Assembling 5 customized questions for {selectedLanguage} ({selectedSituation}).
+          <p className="text-xs text-slate-400">
+            Assembling multiple choice travel scenario questions.
           </p>
         </div>
       )}
 
       {/* Error State */}
       {error && !loading && (
-        <div className="py-12 text-center space-y-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-3xl p-8">
-          <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
-          <h3 className="text-xl font-bold text-rose-700 dark:text-rose-300">
+        <div className="py-12 text-center space-y-4 bg-rose-500/10 border border-rose-500/30 rounded-3xl p-8">
+          <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
+          <h3 className="text-xl font-bold text-rose-300">
             Failed to Load Quiz
           </h3>
-          <p className="text-sm text-rose-600 dark:text-rose-400">{error}</p>
+          <p className="text-xs text-rose-300">{error}</p>
           <button
             onClick={fetchQuizQuestions}
-            className="px-6 py-2.5 rounded-xl bg-rose-600 text-white font-semibold text-sm hover:bg-rose-700 transition-colors"
+            className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors cursor-pointer"
           >
             Try Again
           </button>
@@ -245,49 +236,49 @@ function QuizContent() {
 
       {/* Active Question View */}
       {!loading && !error && questions.length > 0 && !quizCompleted && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-lg space-y-6">
+        <div className="bg-[#0D1B3A] border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-7">
           
           {/* Progress Header */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-400">
               <span>Question {currentIndex + 1} of {questions.length}</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-1">
-                <Trophy className="w-4 h-4" /> Score: {score}
+              <span className="text-[#00C9A7] font-extrabold flex items-center gap-1.5">
+                <Trophy className="w-4 h-4 text-[#F5B942]" /> Score: {score}
               </span>
             </div>
 
             {/* Visual Progress Bar */}
-            <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="w-full h-2.5 rounded-full bg-[#07111F] overflow-hidden border border-slate-800">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 rounded-full"
+                className="h-full bg-gradient-to-r from-[#00C9A7] via-[#38BDF8] to-[#00C9A7] transition-all duration-300 rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
 
           {/* Question Text */}
-          <div className="space-y-2 pt-2">
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-500/20">
-              {selectedLanguage} Practice Question
+          <div className="space-y-3 pt-2">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#00C9A7] bg-[#00C9A7]/15 px-3 py-1 rounded-full border border-[#00C9A7]/30">
+              {selectedLanguage} Question
             </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
+            <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
               {currentQuestion.englishPrompt}
             </h2>
           </div>
 
-          {/* 4 Selectable Options */}
-          <div className="grid grid-cols-1 gap-3">
+          {/* 4 Large Selectable Answer Cards */}
+          <div className="grid grid-cols-1 gap-3.5">
             {currentQuestion.options.map((option, idx) => {
               const isSelected = selectedOption === option;
               const isCorrect = option === currentQuestion.correctAnswer;
 
-              let optionClass = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-500/50 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-200';
+              let optionClass = 'border-slate-800 bg-[#07111F] hover:border-[#00C9A7]/50 hover:bg-[#0B1630] text-slate-200';
 
               if (showExplanation) {
                 if (isCorrect) {
-                  optionClass = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-bold ring-2 ring-emerald-500/30';
+                  optionClass = 'border-[#00C9A7] bg-[#00C9A7]/20 text-white font-extrabold ring-2 ring-[#00C9A7]/40 shadow-[0_0_20px_rgba(0,201,167,0.2)]';
                 } else if (isSelected) {
-                  optionClass = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200 font-bold ring-2 ring-rose-500/30';
+                  optionClass = 'border-rose-500 bg-rose-500/20 text-rose-200 font-extrabold ring-2 ring-rose-500/40';
                 }
               }
 
@@ -298,74 +289,74 @@ function QuizContent() {
                   key={idx}
                   onClick={() => handleOptionSelect(option)}
                   disabled={showExplanation}
-                  className={`w-full p-4 rounded-2xl border text-left text-sm font-semibold transition-all flex items-center justify-between gap-3 ${optionClass}`}
+                  className={`w-full p-4 sm:p-5 rounded-2xl border text-left text-sm font-semibold transition-all flex items-center justify-between gap-3 cursor-pointer ${optionClass}`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs font-bold shrink-0">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center text-xs font-black shrink-0 border border-slate-700">
                       {optionLabels[idx] || idx + 1}
                     </span>
-                    <span>{option}</span>
+                    <span className="text-base font-bold">{option}</span>
                   </div>
 
-                  {showExplanation && isCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />}
-                  {showExplanation && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-rose-500 shrink-0" />}
+                  {showExplanation && isCorrect && <CheckCircle2 className="w-6 h-6 text-[#00C9A7] shrink-0" />}
+                  {showExplanation && isSelected && !isCorrect && <XCircle className="w-6 h-6 text-rose-400 shrink-0" />}
                 </button>
               );
             })}
           </div>
 
-          {/* Explanation & Audio Feedback */}
+          {/* Explanation & Audio Feedback Box */}
           {showExplanation && (
             <div className={`p-5 rounded-2xl border text-xs space-y-3 animate-in fade-in duration-300 ${
               selectedOption === currentQuestion.correctAnswer
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-200'
-                : 'bg-rose-500/10 border-rose-500/30 text-rose-900 dark:text-rose-200'
+                ? 'bg-[#00C9A7]/10 border-[#00C9A7]/30 text-emerald-200'
+                : 'bg-rose-500/10 border-rose-500/30 text-rose-200'
             }`}>
               <div className="flex items-center justify-between">
-                <span className="font-extrabold text-sm flex items-center gap-1.5">
+                <span className="font-extrabold text-sm flex items-center gap-2">
                   {selectedOption === currentQuestion.correctAnswer ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span>✅ Correct!</span>
+                      <CheckCircle2 className="w-5 h-5 text-[#00C9A7]" />
+                      <span className="text-[#00C9A7]">✓ Correct Answer!</span>
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-4 h-4 text-rose-500" />
-                      <span>❌ Incorrect</span>
+                      <XCircle className="w-5 h-5 text-rose-400" />
+                      <span className="text-rose-400">Try Again Next Time</span>
                     </>
                   )}
                 </span>
 
                 <button
                   onClick={() => playTextToSpeech(currentQuestion.correctAnswer, 'en-US')}
-                  className="px-3 py-1 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold text-xs flex items-center gap-1"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#00C9A7] text-slate-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>Listen Pronunciation</span>
+                  <Volume2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Listen</span>
                 </button>
               </div>
 
-              <p className="leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
+              <p className="leading-relaxed text-slate-200 font-medium text-sm">
                 {currentQuestion.explanation}
               </p>
 
               {currentQuestion.phonetic && (
-                <p className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                <p className="font-mono text-[#F5B942] font-bold text-xs">
                   🗣 Phonetic: {currentQuestion.phonetic}
                 </p>
               )}
             </div>
           )}
 
-          {/* Next Button */}
+          {/* Next Question / Finish Button */}
           {showExplanation && (
             <div className="pt-2 flex justify-end">
               <button
                 onClick={handleNext}
-                className="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-2"
+                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#00C9A7] via-[#38BDF8] to-[#00C9A7] hover:opacity-95 text-slate-950 font-black text-sm shadow-xl shadow-[#00C9A7]/25 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <span>{currentIndex + 1 < questions.length ? 'Next Question' : 'View Quiz Results'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
           )}
@@ -373,38 +364,38 @@ function QuizContent() {
         </div>
       )}
 
-      {/* Result Page View */}
+      {/* Result Screen View */}
       {quizCompleted && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sm:p-12 text-center shadow-xl space-y-8 animate-in zoom-in-95 duration-300">
+        <div className="bg-[#0D1B3A] border border-slate-800 rounded-3xl p-8 sm:p-12 text-center shadow-2xl space-y-8 animate-in zoom-in-95 duration-300">
           
-          {/* Badge */}
+          {/* Rating Badge */}
           {(() => {
             const acc = Math.round((score / questions.length) * 100);
             const badge = getRatingBadge(acc);
             return (
-              <div className="space-y-4">
-                <div className={`inline-flex flex-col items-center p-6 rounded-3xl border ${badge.color} max-w-sm mx-auto space-y-2`}>
-                  <Trophy className="w-12 h-12 animate-bounce" />
-                  <h2 className="text-3xl font-extrabold">{badge.title}</h2>
-                  <p className="text-xs font-medium">{badge.desc}</p>
+              <div className="space-y-5">
+                <div className={`inline-flex flex-col items-center p-6 rounded-3xl border ${badge.color} max-w-md mx-auto space-y-2`}>
+                  <Trophy className="w-14 h-14 animate-bounce" />
+                  <h2 className="text-3xl font-black">{badge.title}</h2>
+                  <p className="text-xs font-semibold text-slate-300">{badge.desc}</p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto pt-4">
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 block font-semibold">Final Score</span>
-                    <span className="text-2xl font-extrabold text-slate-900 dark:text-white">{score} / {questions.length}</span>
+                  <div className="p-4 rounded-2xl bg-[#07111F] border border-slate-800">
+                    <span className="text-xs text-slate-400 block font-bold">Your Score</span>
+                    <span className="text-2xl font-black text-white">{score} / {questions.length}</span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 block font-semibold">Accuracy</span>
-                    <span className="text-2xl font-extrabold text-emerald-500">{acc}%</span>
+                  <div className="p-4 rounded-2xl bg-[#07111F] border border-slate-800">
+                    <span className="text-xs text-slate-400 block font-bold">Accuracy</span>
+                    <span className="text-2xl font-black text-[#00C9A7]">{acc}%</span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 block font-semibold">Correct</span>
-                    <span className="text-2xl font-extrabold text-emerald-600">{score}</span>
+                  <div className="p-4 rounded-2xl bg-[#00C9A7]/10 border border-[#00C9A7]/30">
+                    <span className="text-xs text-[#00C9A7] block font-bold">Correct</span>
+                    <span className="text-2xl font-black text-[#00C9A7]">{score}</span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
-                    <span className="text-xs text-rose-600 dark:text-rose-400 block font-semibold">Wrong</span>
-                    <span className="text-2xl font-extrabold text-rose-600">{questions.length - score}</span>
+                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30">
+                    <span className="text-xs text-rose-400 block font-bold">Incorrect</span>
+                    <span className="text-2xl font-black text-rose-400">{questions.length - score}</span>
                   </div>
                 </div>
               </div>
@@ -415,15 +406,15 @@ function QuizContent() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={handleRestart}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#00C9A7] text-slate-950 font-extrabold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
-              <RotateCcw className="w-4 h-4" />
-              <span>Try Again</span>
+              <RotateCcw className="w-4 h-4 stroke-[2.5]" />
+              <span>Practice Again</span>
             </button>
 
             <Link
               href="/phrasebook"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-sm hover:from-emerald-500 hover:to-teal-500 transition-all shadow-md flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 border border-slate-700"
             >
               <BookOpen className="w-4 h-4" />
               <span>Back to Phrasebook</span>
@@ -431,7 +422,7 @@ function QuizContent() {
 
             <Link
               href="/dashboard"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-center"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-sm transition-colors text-center border border-slate-800"
             >
               View Dashboard Stats
             </Link>
@@ -446,14 +437,14 @@ function QuizContent() {
 
 export default function QuizPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex flex-col bg-[#07111F] text-slate-100">
       <Navbar />
 
       <main className="flex-grow py-10 sm:py-16">
         <Suspense fallback={
           <div className="py-20 text-center">
-            <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm text-slate-500 mt-2">Loading quiz module...</p>
+            <div className="w-10 h-10 border-4 border-[#00C9A7] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs text-slate-400 mt-3">Loading quiz module...</p>
           </div>
         }>
           <QuizContent />

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "🌍 Travel Phrasebook — AI-Powered Travel Language Assistant",
+  title: "Travel Phrasebook — AI-Powered Travel Language Assistant",
   description: "Your AI-powered travel companion for learning useful local phrases, pronunciation, cultural etiquette and emergency communication.",
 };
 
@@ -25,11 +25,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+      <body
+        className="min-h-full flex flex-col font-sans bg-[#07111F] text-slate-100 selection:bg-[#00C9A7] selection:text-slate-950"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>
   );
 }
+
